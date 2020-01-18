@@ -41,10 +41,11 @@ export class FichaPersonal extends connect(store)(LitElement) {
   protected render() {
     return html`
     <h2>Datos Personales</h2>
-    ${this.datos[1].Nombre}
-    ${this.datos[1].RUT}    
-    ${this.datos[2].Nombre}
-    ${this.datos[2].RUT}
+    ${this.datos[1].infPeriodoAcademico.direccion} <br>
+    ${this.datos[1].infPersonal.nombre} <br>
+    ${this.datos[1].infApoderado.nombre} <br>
+    ${this.datos[1].infAcademica.carrera} <br>
+    ${this.datos[1].infFamilia.direccion}
     
     `;
   

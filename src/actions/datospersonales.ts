@@ -1,4 +1,4 @@
-/**
+  /**
 @license
 Copyright (c) 2018 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -23,21 +23,70 @@ export type DatosAction = ActionGetDatos;
 type ThunkResult = ThunkAction<void, RootState, undefined, DatosAction>;
 
 const DATOS_LISTA =
-[ {
+[{ 
+  "id":1,
+
+  "infPersonal":
+  {
     "id" : 1,
-    "Nombre": "Negro Matapacos",
-    "RUT": '77.777.777-7',
-    "Fecha de nacimiento": '1/07/1996',
-    "Celular": 123456789 ,
-    "Sexo": "Si",
-    "Nacionalidad": "Chilena"
+    "nombre": "Negro Matapacos",
+    "rut": '77.777.777-7',
+    "fechaNacimiento": '1/07/1996',
+    "pasaporte": "" ,
+    "celular": 123456789 ,
+    "email": "matapacos@gmail.com",
+    "grupoSanguineo": "Rh- A",
+    "sexo": "Masculino",
+    "estadoCivil": "Casado",
+    "nacionalidad": "Chilena",
+    "prevision": "Fonasa",
+    "matriculaMilitar": "",
+    "numHijos": 60
     },
+
+  "infApoderado": 
   { 
-    "id" : 2,
-    "RUT": '66.666.666-6',
-    "Nombre": "Negron Matamilicos"
+    "id" : 1,
+    "rut": '66.666.666-6',
+    "nombre": "Negro Matamilicos"
+    },
+
+  "infFamilia":
+  { 
+    "id" : 1,
+    "direccion": "Avenida Los Melones",
+    "comuna": "Melon",
+    "telefono": 12345678,
+    "ubicacion": "Hawaii",
+    "fax": ""
+    },
+
+  "infPeriodoAcademico":
+  { 
+    "id": 1,
+    "direccion": "Avenida Las Sandias",
+    "comuna": "Sandia",
+    "telefono": 12345678,
+    "ubicacion": "Papua Nueva Guinea",
+    "tipoDireccion": "Pension"
+    },
+
+  "infAcademica":
+    {
+    "id": 1,
+    "carrera": "Ing. Civil Informatica",
+    "situacionAcademica": "Regular",
+    "ultimaPrioridad": 5000,
+    "ultimaMatricula": "2019-2",
+    "ingresoPregrado": 2015,
+    "estadoCarrera": "Vigente",
+    "rol": "201573xxx-x",
+    "anioIngreso": 2015,
+    "planCarrera": 7313,
+    "situacionFinanciera": "Al dia",
+    "fechaArancel": "01/01/2015"
     }
-  ];
+}];
 
 export const getAllDatos: ActionCreator<ThunkResult> = () => (dispatch) => {
   const datos = DATOS_LISTA.reduce((obj, dato) => {

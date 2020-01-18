@@ -23,12 +23,74 @@ export interface DatosState {
 
 export interface DatosPersonales {
   [index:string]: Bloque;
+
 }
 
 export interface Bloque {
-  Nombre: String;
-  RUT: String;
+  id:number;
+  infPersonal: BloquePersonal;
+  infApoderado: BloqueApoderado;
+  infFamilia: BloqueGrupoFamiliar;
+  infPeriodoAcademico: BloquePeriodoAcademico;
+  infAcademica: BloqueAcademico;
 }
+
+export interface BloquePersonal {
+  id: number
+  nombre: String;
+  rut: String;
+  fechaNacimiento: String;
+  pasaporte: String;
+  celular: number;
+  email: String;
+  grupoSanguineo: String;
+  sexo: String;
+  estadoCivil: String;
+  nacionalidad: String;
+  prevision: String;
+  matriculaMilitar: String;
+  numHijos: number;
+}
+
+export interface BloqueApoderado {
+  id: number;
+  nombre: String;
+  rut: String;
+}
+
+export interface BloqueGrupoFamiliar {
+  id: number;
+  direccion: String;
+  comuna: String;
+  telefono: number;
+  ubicacion: String;
+  fax: String;
+}
+
+export interface BloquePeriodoAcademico {
+  id: number;
+  direccion: String;
+  comuna: String;
+  telefono: number;
+  ubicacion: String;
+  tipoDireccion: String;
+}
+
+export interface BloqueAcademico {
+  id: number;
+  carrera: String;
+  situacionAcademica: String;
+  ultimaPrioridad: number;
+  ultimaMatricula: String;
+  ingresoPregrado: number;
+  estadoCarrera: String;
+  rol: String;
+  anioIngreso: number;
+  planCarrera: number;
+  situacionFinanciera: String;
+  fechaArancel: String;
+}
+
 
 const INITIAL_STATE: DatosState = {
   datos: {},
