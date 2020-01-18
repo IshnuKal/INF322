@@ -24,6 +24,8 @@ import { customCss } from './style';
 // Importen sus tipos de datos y funciones
 import { getAllCursos } from '../actions/cursos';
 import { ListaCursos } from '../reducers/cursos';
+import { getAllDatos} from '../actions/datospersonales';
+import { DatosPersonales} from '../reducers/datospersonales';
 
 // These are the actions needed by this element.
 import {
@@ -40,9 +42,13 @@ import './snack-bar.js';
 
 // Aqui se importan los componentes.
 import './horario-clases';
+import './ficha-personal';
 
 @customElement('main-page')
 export class MainPage extends connect(store)(LitElement) {
+  @property({type: Object})
+  private _datos: DatosPersonales = {};
+
   @property({type: Object})
   private _cursos: ListaCursos = {};
 
@@ -145,9 +151,9 @@ export class MainPage extends connect(store)(LitElement) {
         <div id="content">
             <!-- ACA está la utilización del componente, para pasarle datos usen un punto '.' más
                  el nombre de la variable del componente (public) -->
-            <horario-clases class="component-margin" .cursos="${this._cursos}"></horario-clases> 
+            <ficha-personal class="component-margin" .datos= "${this._datos}"></ficha-personal>
+            <horario-clases class="component-margin" .cursos="${this._cursos}"></horario-clases>
         </div>
-        
         <div id="footer">
         </div>
         
@@ -176,6 +182,7 @@ export class MainPage extends connect(store)(LitElement) {
         () => store.dispatch(updateDrawerState(false)));
 
     // Cargando datos
+    store.dispatch(getAllDatos());
     store.dispatch(getAllCursos());
   }
 
@@ -200,5 +207,6 @@ export class MainPage extends connect(store)(LitElement) {
   stateChanged(state: RootState) {
     this._page = state.app!.page;
     this._cursos = state.cursos!.cursos;
+    this._datos = state.datos!.datos;
   }
 }

@@ -33,6 +33,9 @@ import { AppAction } from './actions/app.js';
  * es definido por un archivo en actions (que contiene las funciones que usa la vista) y uno
  * en reducers (donde está el código de como se modifica la memoria).
  * Todo lo definido debe ser impotado aquí: */
+import datos, { DatosState } from './reducers/datospersonales';
+import { DatosAction } from './actions/datospersonales';
+
 import cursos, { CursosState } from './reducers/cursos';
 import { CursosAction } from './actions/cursos';
 
@@ -40,10 +43,11 @@ import { CursosAction } from './actions/cursos';
 export interface RootState {
   app?: AppState;
   cursos?: CursosState;
+  datos?: DatosState;
 }
 
 // Se agrega el tipo de las acciones que creemos al tipo root.
-export type RootAction = AppAction | CursosAction;
+export type RootAction = AppAction | CursosAction | DatosAction;
 
 // Sets up a Chrome extension for time travel debugging.
 // See https://github.com/zalmoxisus/redux-devtools-extension for more information.
@@ -67,3 +71,4 @@ export const store = createStore(
 // Cargar reducers, aquí es donde se conectan los básicos, se pueden cargar a demanda tambien.
 store.addReducers({ app });
 store.addReducers({ cursos });
+store.addReducers({ datos });
