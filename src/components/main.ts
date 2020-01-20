@@ -152,7 +152,7 @@ export class MainPage extends connect(store)(LitElement) {
             <!-- ACA está la utilización del componente, para pasarle datos usen un punto '.' más
                  el nombre de la variable del componente (public) -->
             <ficha-personal class="component-margin" .datos= "${this._datos}"></ficha-personal>
-            <horario-clases class="component-margin" .cursos="${this._cursos}"></horario-clases>
+            <!-- <horario-clases class="component-margin" .cursos="${this._cursos}"></horario-clases> -->
         </div>
         <div id="footer">
         </div>
