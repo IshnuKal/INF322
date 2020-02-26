@@ -272,7 +272,6 @@ export class FichaPersonal extends connect(store)(LitElement) {
                 <label class="select-label">Estado Civil</label>
 				      </div>
             </th>
-            <th>
             <th> 
               <div class="select">
                 <select class="select-text" name="prevision" required>
@@ -312,11 +311,9 @@ export class FichaPersonal extends connect(store)(LitElement) {
                 <label class="select-label">Prevision</label>
               </div>
             </th>
-              
-            </th>
           <tr>
             <th><paper-input label="Celular" id="celular" name="celular" value=${this.datos[1].infPersonal.celular}> </th>
-            <th><paper-input label="Pasaporte" value=${this.datos[1].infPersonal.pasaporte} id="pasaporte" name="pasaporte"></th
+            <th><paper-input label="Pasaporte" value=${this.datos[1].infPersonal.pasaporte} id="pasaporte" name="pasaporte"> </th>
           </tr>
           <tr>
             <th><paper-input label="N° de Hijos" type="text" id="hijos" name="hijos" value=${this.datos[1].infPersonal.numHijos}></th>
