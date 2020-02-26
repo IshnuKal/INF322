@@ -1,0 +1,25 @@
+{
+  "name": "nuxeo",
+  "main": [
+    "dist/nuxeo.js"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src",
+    "lib",
+    "test"
+  ],
+  "homepage": "https://github.com/nuxeo/nuxeo-js-client",
+  "version": "3.16.1",
+  "_release": "3.16.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v3.16.1",
+    "commit": "da6f6361d04f31a4f4629c7502a66feb2fcb1510"
+  },
+  "_source": "https://github.com/nuxeo/nuxeo-js-client.git",
+  "_target": "^3.2.1",
+  "_originalSource": "nuxeo"
+}

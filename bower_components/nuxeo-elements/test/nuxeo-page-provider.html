@@ -1,0 +1,326 @@
+<!--
+@license
+(C) Copyright Nuxeo Corp. (http://nuxeo.com/)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <link rel="import" href="../../polymer/polymer.html">
+    <script src="test-helpers.js"></script>
+    <link rel="import" href="../nuxeo-page-provider.html">
+  </head>
+
+  <body>
+    <test-fixture id="nx-pp">
+      <template>
+        <nuxeo-page-provider id="nxpp" provider="test_provider" page-size="40">
+        </nuxeo-page-provider>
+      </template>
+    </test-fixture>
+    <test-fixture id="nx-pp-falseParam">
+      <template>
+        <nuxeo-page-provider id="nxpp" provider="test_provider" params='{"boolean": false}' page-size="40">
+        </nuxeo-page-provider>
+      </template>
+    </test-fixture>
+    <test-fixture id="nx-pp-default">
+      <template>
+        <nuxeo-page-provider id="nxpp">
+        </nuxeo-page-provider>
+      </template>
+    </test-fixture>
+    <script>
+      suite('<nuxeo-page-provider>', () => {
+
+        const responseHeaders = {
+          json: {'Content-Type': 'application/json'},
+          plain: {'Content-Type': 'text/plain'},
+        };
+
+        let server;
+        setup(() => {
+          server = sinon.fakeServer.create();
+          server.autoRespond = true;
+        });
+
+        teardown(() => {
+          server.restore();
+        });
+
+        suite('when page provider has a false boolean param', () => {
+
+          setup(() => {
+            server.respondWith('GET', '/json/cmis', [
+              200,
+              responseHeaders.json,
+              '{}',
+            ]);
+            server.respondWith(
+              'POST',
+              '/api/v1/automation/login',
+              [
+                200,
+                responseHeaders.json,
+                '{"entity-type":"login","username":"Administrator"}',
+              ],
+            );
+            server.respondWith(
+              'GET',
+              '/api/v1/user/Administrator',
+              [
+                200,
+                responseHeaders.json,
+                '{"entity-type":"login","username":"Administrator"}',
+              ],
+            );
+          });
+
+          test('it should be sent to the server', () => {
+            server.respondWith(
+              'GET',
+              '/api/v1/search/pp/test_provider/execute?currentPageIndex=0&pageSize=40&boolean=false',
+              [
+                200,
+                responseHeaders.json,
+                '{"entity-type":"documents", "entries": []}',
+              ],
+            );
+            const pp = fixture('nx-pp-falseParam');
+            return pp.fetch().then((res) => {
+              expect(res['entity-type']).to.be.eq('documents');
+            }).catch(() => {
+              throw new Error('Expected to a valid response!');
+            });
+          });
+
+        });
+
+        suite('when page provider returns an error response', () => {
+
+          setup(() => {
+            server.respondWith('GET', '/json/cmis', [
+              200,
+              responseHeaders.json,
+              '{}',
+            ]);
+            server.respondWith(
+              'POST',
+              '/api/v1/automation/login',
+              [
+                200,
+                responseHeaders.json,
+                '{"entity-type":"login","username":"Administrator"}',
+              ],
+            );
+            server.respondWith(
+              'GET',
+              '/api/v1/user/Administrator',
+              [
+                200,
+                responseHeaders.json,
+                '{"entity-type":"login","username":"Administrator"}',
+              ],
+            );
+          });
+
+          test('it should throw an error', () => {
+            /*
+             * This workaround is needed on Firefox due to the 'error' event fired in component.
+             * More Details: https://github.com/webcomponents/webcomponentsjs/issues/138
+             */
+            const eventHandler = (e) => e.stopPropagation();
+            document.addEventListener('error', eventHandler);
+
+            server.respondWith(
+              'GET',
+              '/api/v1/search/pp/test_provider/execute?currentPageIndex=0&pageSize=40',
+              [
+                500,
+                responseHeaders.json,
+                '{"entity-type":"exception", "message":"Internal Server Error", "status": 500}',
+              ],
+            );
+            const pp = fixture('nx-pp');
+            return pp.fetch().then(() => {
+              throw new Error('Expected to have an error response!');
+            }).catch((error) => {
+              expect(error).to.exist; // eslint-disable-line no-unused-expressions
+              expect(error.status).to.be.eq(500);
+              expect(error.message).to.be.eq('Internal Server Error');
+              document.removeEventListener('error', eventHandler); // Cleaning the workaround listener
+            });
+          });
+
+        });
+
+        suite('Parameters Transformation', () => {
+          function checkDefaultParameters(params, shouldIncludeKeys = [], expectedNumberOfNamedParameters = 0) {
+            const expectedKeys = ['currentPageIndex', 'namedParameters', 'offset', 'pageSize'];
+            const unexpectedKeys = ['query', 'queryParams', 'quickFilters', 'sortBy', 'sortOrder'];
+
+            shouldIncludeKeys.forEach((key) => {
+              if (unexpectedKeys.includes(key)) {
+                expectedKeys.push(key);
+                unexpectedKeys.splice(key, 1);
+              }
+            });
+
+            expect(params)
+              .to.exist.and.to.be.an('object')
+              .that.has.all.keys(expectedKeys)
+              .and.not.have.keys(unexpectedKeys);
+
+            expect(params.currentPageIndex).to.be.equal(0);
+            expect(Object.keys(params.namedParameters)).to.have.lengthOf(expectedNumberOfNamedParameters);
+            expect(params.offset).to.be.equal(undefined);
+            expect(params.pageSize).to.be.equal(-1);
+          }
+
+          test('Should include query when it is defined and not empty', () => {
+            const provider = fixture('nx-pp-default');
+            provider.query = 'select * from Document';
+
+            const transformedParams = provider._params;
+            checkDefaultParameters(transformedParams, ['query']);
+            expect(transformedParams.query).to.be.equal('select * from Document');
+          });
+
+          test('Should not include query when it has an empty string', () => {
+            const provider = fixture('nx-pp-default');
+            provider.query = '';
+
+            checkDefaultParameters(provider._params);
+          });
+
+          test('Should not include query when it is not provided as a parameter', () => {
+            const provider = fixture('nx-pp-default');
+
+            checkDefaultParameters(provider._params);
+          });
+
+          test('Should not include sort info when sort parameter is empty', () => {
+            const provider = fixture('nx-pp-default');
+            provider.sort = {};
+
+            checkDefaultParameters(provider._params);
+          });
+
+          test('Should include sort info when sort parameter is not empty', () => {
+            const provider = fixture('nx-pp-default');
+            provider.sort = {'dc:title': 'desc', 'uid:major_version': 'desc'};
+
+            const transformedParams = provider._params;
+            checkDefaultParameters(transformedParams, ['sortBy', 'sortOrder']);
+            expect(transformedParams.sortBy.split(','))
+              .to.have.lengthOf(2)
+              .and.to.include.members(['dc:title', 'uid:major_version']);
+            expect(transformedParams.sortOrder.split(','))
+              .to.have.lengthOf(2)
+              .and.to.include.members(['desc', 'desc']);
+          });
+
+          test('Should include quick filters info when they are provided', () => {
+            const provider = fixture('nx-pp-default');
+            provider.quickFilters = [
+              { active: true, name: 'firstActiveFilter' },
+              { active: false, name: 'inactiveFilter' },
+              { active: true, name: 'secondActiveFilter' },
+            ];
+
+            const transformedParams = provider._params;
+            checkDefaultParameters(transformedParams, ['quickFilters']);
+            expect(transformedParams.quickFilters)
+              .to.be.a('string')
+              .and.to.be.equal('firstActiveFilter,secondActiveFilter');
+          });
+
+          test('Should include quick filters info when there is no active filter', () => {
+            const provider = fixture('nx-pp-default');
+            provider.quickFilters = [
+              { active: false, name: 'firstInactiveFilter' },
+              { active: false, name: 'secondInactiveFilter' },
+            ];
+
+            const transformedParams = provider._params;
+            checkDefaultParameters(transformedParams, ['quickFilters']);
+          });
+
+          test('Should convert parameters to string when they are from a different type', () => {
+            const provider = fixture('nx-pp-default');
+            provider.params = {
+              myNumber: 1,
+              myArray: ['string 1', 'string 2'],
+              myUnknownObject: {
+                key: 'value',
+                otherKey: 123,
+              },
+              myBoolean: false,
+            };
+
+            const transformedParams = provider._params;
+            checkDefaultParameters(transformedParams, [], 4);
+            expect(transformedParams.namedParameters).to.be.an('object')
+              .that.has.all.keys('myNumber', 'myArray', 'myUnknownObject', 'myBoolean');
+
+            expect(transformedParams.namedParameters.myNumber).to.be.a('string');
+            expect(transformedParams.namedParameters.myNumber).to.be.equal('1');
+
+            expect(transformedParams.namedParameters.myArray).to.be.a('string');
+            expect(transformedParams.namedParameters.myArray).to.be.equal('["string 1","string 2"]');
+
+            expect(transformedParams.namedParameters.myUnknownObject).to.be.a('string');
+            expect(transformedParams.namedParameters.myUnknownObject).to.be.equal('{"key":"value","otherKey":123}');
+
+            expect(transformedParams.namedParameters.myBoolean).to.be.a('string');
+            expect(transformedParams.namedParameters.myBoolean).to.be.equal('false');
+          });
+
+          test('Should include the ID when a parameter is an object with "entity-type"', () => {
+            const provider = fixture('nx-pp-default');
+            provider.params = {
+              user: {
+                'entity-type': 'user',
+                name: 'John',
+                id: 'jdoe',
+              },
+              document: {
+                'entity-type': 'document',
+                'dc:title': 'my title',
+                'dc:creator': 'Administrator',
+                uid: 'a-meaningless-uid',
+              },
+            };
+
+            const transformedParams = provider._params;
+            expect(transformedParams)
+              .to.exist.and.to.be.an('object')
+              .that.has.all.keys('currentPageIndex', 'offset', 'pageSize', 'namedParameters')
+              .and.not.have.keys('sortBy', 'sortOrder', 'queryParams', 'quickFilters');
+
+            checkDefaultParameters(transformedParams, [], 2);
+            expect(transformedParams.namedParameters).to.be.an('object')
+              .that.has.all.keys('user', 'document');
+
+            expect(transformedParams.namedParameters.user).to.be.equal('jdoe');
+            expect(transformedParams.namedParameters.document).to.be.equal('a-meaningless-uid');
+          });
+        });
+
+      });
+    </script>
+  </body>
+</html>

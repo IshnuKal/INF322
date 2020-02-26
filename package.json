@@ -19,7 +19,17 @@
     "test:regenerate_screenshots": "tsc && mocha test/integration/screenshots-baseline/regenerate.js --timeout=15000"
   },
   "dependencies": {
+    "@graviton/dropdown": "^1.1.5",
+    "@lrnwebcomponents/select-menu": "^2.4.1",
     "@polymer/app-layout": "^3.0.0",
+    "@polymer/iron-image": "^3.0.2",
+    "@polymer/iron-selector": "^3.0.1",
+    "@polymer/paper-button": "^3.0.1",
+    "@polymer/paper-card": "^3.0.1",
+    "@polymer/paper-dropdown-menu": "github:PolymerElements/paper-dropdown-menu",
+    "@polymer/paper-input": "^3.2.0",
+    "@polymer/paper-item": "^3.0.1",
+    "@polymer/paper-listbox": "^3.0.1",
     "@polymer/polymer": "^3.1.0",
     "@webcomponents/webcomponentsjs": "^2.2.4",
     "lit-element": "^2.2.1",

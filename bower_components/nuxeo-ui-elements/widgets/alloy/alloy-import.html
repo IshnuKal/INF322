@@ -1,0 +1,28 @@
+<!--  XXX CKEditor causes firefox to crash when scripts are inlined, moved to index.html -->
+<!-- <script src="alloy-editor-all.js"></script> -->
+<script type="text/javascript">
+  CKEDITOR.config.customConfig = ''; // skip loading config.js
+  CKEDITOR.config.language = (window.nuxeo.I18n.language) ? window.nuxeo.I18n.language.split('-')[0] : 'en';
+  AlloyEditor._langResourceRequested = true; // skip loading of language file
+  const aI18Ns = document.createElement('script');
+  aI18Ns.async = true;
+  aI18Ns.src = `bower_components/nuxeo-ui-elements/widgets/alloy/lang/alloy-editor/${CKEDITOR.config.language}.js`;
+  document.head.appendChild(aI18Ns);
+</script>
+
+<script src="config.js" type="text/javascript" ></script>
+<script src="lang/ar.js" type="text/javascript" ></script>
+<script src="lang/de.js" type="text/javascript" ></script>
+<script src="lang/en.js" type="text/javascript" ></script>
+<script src="lang/es.js" type="text/javascript" ></script>
+<script src="lang/eu.js" type="text/javascript" ></script>
+<script src="lang/fr.js" type="text/javascript" ></script>
+<script src="lang/he.js" type="text/javascript" ></script>
+<script src="lang/id.js" type="text/javascript" ></script>
+<script src="lang/it.js" type="text/javascript" ></script>
+<script src="lang/ja.js" type="text/javascript" ></script>
+<script src="lang/nl.js" type="text/javascript" ></script>
+<script src="lang/pt.js" type="text/javascript" ></script>
+<script src="lang/sv.js" type="text/javascript" ></script>
+<script src="lang/zh.js" type="text/javascript" ></script>
+<script src="styles.js" type="text/javascript" ></script>
