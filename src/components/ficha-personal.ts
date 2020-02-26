@@ -68,6 +68,16 @@ export class FichaPersonal extends connect(store)(LitElement) {
         color: blue;
         background: red;
       }
+      paper-button.custom:hover {
+        background-color: var(--paper-blue-100);
+      }
+      paper-button.blue {
+        background-color: var(--paper-blue-900);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+      };
     </style>
     <paper-card heading="Datos Personales" elevation="3" alt="datos_personales">
       <div class="card-content">
@@ -102,7 +112,7 @@ export class FichaPersonal extends connect(store)(LitElement) {
             </tr>
           </tbody>
         </table>
-        <paper-button @click="${() => {this._edit = !this._edit}}">
+        <paper-button raised class="custom blue" @click="${() => {this._edit = !this._edit}}">
           Editar
         </paper-button>
       </div>
@@ -251,6 +261,16 @@ export class FichaPersonal extends connect(store)(LitElement) {
         pointer-events: none;
         opacity: 0.5;
       }
+      paper-button.custom:hover {
+        background-color: var(--paper-blue-100);
+      }
+      paper-button.blue {
+        background-color: var(--paper-blue-900);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+      };
   </style>
   <paper-card heading="Editar Datos" elevation="3" alt="editar_datos">
     <div class="card-content">
@@ -320,7 +340,7 @@ export class FichaPersonal extends connect(store)(LitElement) {
           </tr>
         </tbody>
       </table>
-      <paper-button @click="${() => {this._edit = !this._edit}}">
+      <paper-button raised class="custom blue" @click="${() => {this._edit = !this._edit}}">
         Aplicar Cambios
       </paper-button>
     </div>
