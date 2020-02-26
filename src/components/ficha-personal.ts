@@ -82,7 +82,7 @@ export class FichaPersonal extends connect(store)(LitElement) {
         background: red;
       }
       paper-button.custom:hover {
-        background-color: var(--paper-blue-100);
+        background-color: var(--paper-blue-300);
       }
       paper-button.blue {
         background-color: var(--paper-blue-900);
@@ -275,7 +275,7 @@ export class FichaPersonal extends connect(store)(LitElement) {
         opacity: 0.5;
       }
       paper-button.custom:hover {
-        background-color: var(--paper-blue-100);
+        background-color: var(--paper-blue-300);
       }
       paper-button.blue {
         background-color: var(--paper-blue-900);
