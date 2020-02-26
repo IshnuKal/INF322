@@ -128,7 +128,7 @@ export class MainPage extends connect(store)(LitElement) {
   }
 
   _logIn () {
-    this._loggedIn = (Math.random() > .5);
+    this._loggedIn = (Math.random() > 0);
     if (!this._loggedIn) {
         alert('try again!');
     }
