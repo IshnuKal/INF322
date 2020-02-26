@@ -47,6 +47,19 @@ export class FichaPersonal extends connect(store)(LitElement) {
  
   protected render() {
     return html`
+    <style>
+    paper-button.custom2:hover {
+      background-color: var(--paper-red-100);
+    }
+    paper-button.red {
+      background-color: var(--paper-red-a700);
+      color: white;
+      --paper-button-raised-keyboard-focus: {
+        background-color: var(--paper-red-900) !important;
+        color: white !important;
+    };
+
+    </style>
     ${!this._edit ? html`
     <style>
       th {
@@ -340,9 +353,12 @@ export class FichaPersonal extends connect(store)(LitElement) {
           </tr>
         </tbody>
       </table>
-      <paper-button raised class="custom blue" @click="${() => {this._edit = !this._edit}}">
+    <paper-button raised class="custom blue" @click="${() => {this._edit = !this._edit}}">
         Aplicar Cambios
-      </paper-button>
+    </paper-button>
+    <paper-button raised class="custom2 red" @click="${() => {this._edit = !this._edit}}">
+      Cancelar
+    </paper-button>
     </div>
   </paper-card>
     `}
